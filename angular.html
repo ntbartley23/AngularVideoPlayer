@@ -1,0 +1,44 @@
+<!DOCTYPE <!DOCTYPE html>
+<html lang="en" ng-app="videoApp">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title> Video Player Application</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/darly.css">
+	<link rel="stylesheet" type="text/css" href="video-player.css">
+	<script src="js/jquery-1.12.0.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/angular.min.js"></script>
+</head>
+<body ng-controller="VideoController">
+<!-- declare controller on body ^(above). this binds controller scope to the entire body. -->
+<div id="fullPlayer" class="unselectable ng-cloak">
+   <div class="embed-responsive embed-responsive-16by9">
+     <video id="VideoElement" ng-click="togglePlay()" width="100%" height="100%" src="{{videoSource}}"></video>
+      <div id="bigPlayButton" ng-click="togglePlay()" ng-hide="videoPlaying" class="well"><span class= "glyphicon glyphicon-play"></span></div>
+      <div id="videoTitle" ng-hide="videoPlaying">{{titleDisplay}}</div>
+    </div>
+     <div id="playerToolBar">
+     	<a id="playBtn" ng-click="togglePlay()" class="btn btn-default"><span class="glyphicon glyphicon-play"></span>
+     	<a id="muteBtn" ng-click="toggleMute()" class="btn btn-default"><span class="glyphicon glyphicon-volume-up"></span>
+     	<span id="videoTime">{{currentTime}} / {{totalTime}}</span>
+     	<!-- readout for video time ^(above) -->
+     </div>
+</div>
+<!-- data binding will help out put messages ( anything placed inside braces works from scope-->
+<!-- ex.{{message}} -->
+
+
+<!-- make video src and element controllable by declaring these as JS variable inside html-->
+<script>
+ var videoSource = "video/Countdown.webm";
+ var titleDisplay = "Beyonce-Countdown";
+ var videoDescription = "Beyonce-Countdown: a great video used to demonstrate familiarity with AngularJS. Please give me a JOB!";
+ </script>
+
+ <script src="video-app.js"></script>
+
+</body>
+</html>
