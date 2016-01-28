@@ -14,10 +14,22 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
     //create custom time read up 
     $scope.currentTime;
     $scope.totalTime;
+    //add positioning properties
+     $scope.scrubTop = -1000;
+     $scope.scrubLeft = -1000;
+     //postion the BIG PLay Button
+     $scope.vidHeightCenter = -1000;
+     $scope.vidWidthCenter = -1000;
 
 
     //invoke layout refresh using interval mechanism
     $interval(function() {
+    	//helps calculate data for Progress.offsetLeft and Progress.offsetWidth
+    	var t = $scope.videoDisplay.currentTime;
+    	var d = $scope.videoDisplay.duration;
+    	var w = t / d * 100;
+    	var p = document.getElementById('progressMeterFull').offsetLeft + document.getElementById('progressMeterFull').offsetWidth;
+    	$scope.scrubLeft = (t / d * p) -7;
     	$scope.updateLayout();
 
     }, 100);
@@ -53,6 +65,9 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
   //force angular to re-render elements in the DOM
 
    $scope.updateLayout = function() {
+   	$scope.scrubTop = document.getElementById('progressMeterFull').offsetTop-2;
+   	$scope.vidHeightCenter = $scope.videoDisplay.offsetHeight/2 - 50;
+   	$scope.vidWidthCenter = $scope.videoDisplay.offsetWidth/2 -50;
    	//check to see if phase comes back true or false to check if it is safe to force re-rendering of elements
    	  if(!$scope.$$phase) {
    	  	scope.$apply();
