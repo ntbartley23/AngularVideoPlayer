@@ -22,8 +22,8 @@
     </div>
 
     <!-- build progress bar for user to use if they want to jump to different part of video -->
-      <div id="progressMeterFull">
-        <div id="progressMeter" style="width:{{scrubleft+7}}px"></div>
+      <div id="progressMeterFull" ng-click="videoSeek($event)">
+        <div id="progressMeter"  ng-click="videoSeek($event) style="width:{{scrubleft+7}}px"></div>
       </div>
 
      <div id="playerToolBar">

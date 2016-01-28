@@ -29,7 +29,7 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
     	var d = $scope.videoDisplay.duration;
     	var w = t / d * 100;
     	var p = document.getElementById('progressMeterFull').offsetLeft + document.getElementById('progressMeterFull').offsetWidth;
-    	$scope.scrubLeft = (t / d * p) -7;
+    	$scope.scrubLeft = (t / d * p) -7; // this makes calculations based on current time, width, duration, and determine where scrubLeft should be
     	$scope.updateLayout();
 
     }, 100);
@@ -50,6 +50,7 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
    }
 
    $scope.updateTime = function(e) {
+   	if(!$scope.videoDisplay.seeking){
    	$scope.currentTime = e.target.currentTime;
    	if($scope.currentTime == $scope.totalTime) {
    		$scope.videoDisplay.pause();
@@ -57,6 +58,7 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
    		$scope.currentTime = 0;
    		$('#playBtn').children("span").toggleClass("glyphicon-play", true);
    		$('#playBtn').children("span").toggleClass("glyphicon-pause", false);
+   	}
    	}
 
    	
@@ -73,6 +75,16 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
    	  	scope.$apply();
    	  }
    }
+
+ //enable user to click to various points of progress bar to jump to different areas of video
+
+  $scope.videoSeek = function($event) {
+  	var w = document.getElementById('progressMeterFull').offsetWidth;
+  	var d = $scope.videoDisplay.duration;
+  	var s = Math.round($event.pageX / w * d);
+  	$scope.videoDisplay.currentTime = s;
+  }
+
 
     $scope.togglePlay = function() {
     	if($scope.videoDisplay.paused) {
