@@ -4,7 +4,7 @@ var videoApp = angular.module('videoApp',[]);
 //you want to use the scope module to bind different properties, variable, functions to our controller scope
 //pass scope through function .
 //for larger projects, use multiple controllers.
-videoApp.controller('VideoController', ['$scope','$window', function($scope, $window) {
+videoApp.controller('VideoController', ['$scope','$window','$interval',function($scope, $window, $interval) {
 	$scope.videoDisplay = document.getElementById("VideoElement");
 	$scope.videoSource = $window.videoSource;
 	$scope.titleDisplay = $window.titleDisplay;
@@ -14,6 +14,13 @@ videoApp.controller('VideoController', ['$scope','$window', function($scope, $wi
     //create custom time read up 
     $scope.currentTime;
     $scope.totalTime;
+
+
+    //invoke layout refresh using interval mechanism
+    $interval(function() {
+    	$scope.updateLayout();
+
+    }, 100);
 
       // create initialization function
 
@@ -32,9 +39,25 @@ videoApp.controller('VideoController', ['$scope','$window', function($scope, $wi
 
    $scope.updateTime = function(e) {
    	$scope.currentTime = e.target.currentTime;
+   	if($scope.currentTime == $scope.totalTime) {
+   		$scope.videoDisplay.pause();
+   		$scope.videoPlaying = false;
+   		$scope.currentTime = 0;
+   		$('#playBtn').children("span").toggleClass("glyphicon-play", true);
+   		$('#playBtn').children("span").toggleClass("glyphicon-pause", false);
+   	}
+
+   	
    }
 
+  //force angular to re-render elements in the DOM
 
+   $scope.updateLayout = function() {
+   	//check to see if phase comes back true or false to check if it is safe to force re-rendering of elements
+   	  if(!$scope.$$phase) {
+   	  	scope.$apply();
+   	  }
+   }
 
     $scope.togglePlay = function() {
     	if($scope.videoDisplay.paused) {
@@ -65,5 +88,15 @@ videoApp.controller('VideoController', ['$scope','$window', function($scope, $wi
    $scope.initPlayer();
 
 }]);
+
+
+
+//create a filter
+ videoApp.filter('time', function() {
+ 	return function(seconds) {
+ 		var hh = Math.floor(seconds / 3600), mm = Math.floor(seconds / 60) % 60, ss = Math.floor(seconds) % 60;
+ 		return hh + ":" + (mm < 10 ? "0" : "") + mm + ":" + (ss < 10 ? "0" : "") + ss;
+ 	};
+ });
 
 // now when controller initializes, it will set the variables to objects that are in the DOM so the we can manipulate them
