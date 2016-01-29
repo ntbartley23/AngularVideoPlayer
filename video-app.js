@@ -20,16 +20,23 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
      //postion the BIG PLay Button
      $scope.vidHeightCenter = -1000;
      $scope.vidWidthCenter = -1000;
+     //track if we are dragging or not
+     $scope.isDragging = false;
 
 
     //invoke layout refresh using interval mechanism
-    $interval(function() {
+    $interval(function(){
+    	//only fire code below if scope is not dragging
+    	if(!$scope.isDragging){
     	//helps calculate data for Progress.offsetLeft and Progress.offsetWidth
     	var t = $scope.videoDisplay.currentTime;
     	var d = $scope.videoDisplay.duration;
     	var w = t / d * 100;
     	var p = document.getElementById('progressMeterFull').offsetLeft + document.getElementById('progressMeterFull').offsetWidth;
-    	$scope.scrubLeft = (t / d * p) -7; // this makes calculations based on current time, width, duration, and determine where scrubLeft should be
+    	$scope.scrubLeft = (t / d * p) - 7; // this makes calculations based on current time, width, duration, and determine where scrubLeft should be
+    }else{
+    	$scope.scrubLeft = document.getElementById('thumbScrubber').offsetLeft;
+    }
     	$scope.updateLayout();
 
     }, 100);
@@ -58,21 +65,20 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
    		$scope.currentTime = 0;
    		$('#playBtn').children("span").toggleClass("glyphicon-play", true);
    		$('#playBtn').children("span").toggleClass("glyphicon-pause", false);
-   	}
-   	}
-
-   	
+    }
    }
+ 	
+  }
 
   //force angular to re-render elements in the DOM
 
    $scope.updateLayout = function() {
    	$scope.scrubTop = document.getElementById('progressMeterFull').offsetTop-2;
    	$scope.vidHeightCenter = $scope.videoDisplay.offsetHeight/2 - 50;
-   	$scope.vidWidthCenter = $scope.videoDisplay.offsetWidth/2 -50;
+   	$scope.vidWidthCenter = $scope.videoDisplay.offsetWidth/2 - 50;
    	//check to see if phase comes back true or false to check if it is safe to force re-rendering of elements
    	  if(!$scope.$$phase) {
-   	  	scope.$apply();
+   	  	$scope.$apply();
    	  }
    }
 
@@ -85,6 +91,24 @@ videoApp.controller('VideoController', ['$scope','$window','$interval',function(
   	$scope.videoDisplay.currentTime = s;
   }
 
+// add function to Mouse Drag
+  $scope.mouseMoving = function($event) {
+  	if($scope.isDragging){
+  		$("#thumbScrubber").offset({left:$event.pageX});
+  	}
+  }
+
+   $scope.dragStart = function($event) {
+   	$scope.isDragging = true;
+
+   }
+
+   $scope.dragStop = function($event) {
+   	if($scope.isDragging){
+   		$scope.videoSeek($event);
+   		$scope.isDragging = false;
+   	}
+   }
 
     $scope.togglePlay = function() {
     	if($scope.videoDisplay.paused) {

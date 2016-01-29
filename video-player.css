@@ -92,4 +92,16 @@ user-select: none;
 	width: 0px;
 }
 
+#thumbScubber {
+	background-color: #b8b8bb;
+	border: 1px solid #3d3d3d;
+	width:15px;
+	height: 15px;
+	border-radius: 15px;
+	position: absolute;
+	top: -1000px;
+	left: -1000px;
+	cursor: pointer;
+}
+
 
